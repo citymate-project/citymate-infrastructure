@@ -1,16 +1,5 @@
-
-
 # ============================================
 # CITYMATE - Docker Compose Configuration
-# ============================================
-# Ce fichier orchestre tous les micro-services du projet CityMate
-# 
-# Services inclus :
-# - 3 bases de données PostgreSQL (user_db, city_db, community_db)
-# - 3 APIs Spring Boot (user-api, city-api, community-api)
-# 
-# Pour démarrer : docker-compose up -d
-# Pour arrêter : docker-compose down
 # ============================================
 
 services:
@@ -74,7 +63,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - community-db-data:/var/lib/postgresql/datadocker-compose down -v
+      - community-db-data:/var/lib/postgresql/data
       - ./postgres/init-community-db.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - citymate-network
@@ -84,14 +73,24 @@ services:
       timeout: 5s
       retries: 5
 
-
+  # ============================================
+  # REDIS (pour Rate Limiting)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: citymate-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - citymate-network
+    restart: unless-stopped
 
   # ============================================
   # API : USER API (Port 8081)
   # ============================================
   user-api:
     build:
-      context: ../user-api
+      context: ../citymate-userapi
       dockerfile: Dockerfile
     container_name: citymate-user-api
     environment:
@@ -99,8 +98,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/user_db
       SPRING_DATASOURCE_USERNAME: ${USER_DB_USER:-citymate_user}
       SPRING_DATASOURCE_PASSWORD: ${USER_DB_PASSWORD:-user_password}
-      JWT_SECRET: ${JWT_SECRET:-your_secret_key_change_in_production}
-      JWT_EXPIRATION: 86400000
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_EXPIRATION: 900000
+      JWT_REFRESH_EXPIRATION: 86400000
     ports:
       - "8081:8081"
     depends_on:
@@ -110,33 +110,31 @@ services:
       - citymate-network
     restart: unless-stopped
 
-
-    # ============================================
-    # API GATEWAY (Port 8090)
-    # ============================================
+  # ============================================
+  # API GATEWAY (Port 8090)
+  # ============================================
   api-gateway:
     build:
-      context: ../api-gateway
+      context: ../citymate-api-gateway
       dockerfile: Dockerfile
     container_name: citymate-api-gateway
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      JWT_SECRET: ${JWT_SECRET:-VotreCleSecreteTresFortePourLaProductionChangezMoiAbsolument123456789}
+      JWT_SECRET: ${JWT_SECRET}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
       - "8090:8090"
     depends_on:
-      user-api:
-        condition: service_started
+      - user-api
+      - redis
     networks:
       - citymate-network
     restart: unless-stopped
 
-
-
 # ============================================
 # VOLUMES PERSISTANTS
 # ============================================
-# Les données des bases de données sont sauvegardées ici
 volumes:
   user-db-data:
     driver: local
@@ -148,7 +146,6 @@ volumes:
 # ============================================
 # RÉSEAU INTERNE
 # ============================================
-# Tous les services communiquent via ce réseau
 networks:
   citymate-network:
     driver: bridge
