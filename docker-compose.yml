@@ -111,6 +111,29 @@ services:
     restart: unless-stopped
 
   # ============================================
+  # API : COMMUNITY API (Port 8083)
+  # ============================================
+  community-api:
+    build:
+      context: ../citymate-community-api
+      dockerfile: Dockerfile
+    container_name: citymate-community-api
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://community-db:5432/community_db
+      SPRING_DATASOURCE_USERNAME: ${COMMUNITY_DB_USER:-citymate_community}
+      SPRING_DATASOURCE_PASSWORD: ${COMMUNITY_DB_PASSWORD:-community_password}
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "8083:8083"
+    depends_on:
+      community-db:
+        condition: service_healthy
+    networks:
+      - citymate-network
+    restart: unless-stopped
+
+  # ============================================
   # API GATEWAY (Port 8090)
   # ============================================
   api-gateway:
@@ -127,6 +150,7 @@ services:
       - "8090:8090"
     depends_on:
       - user-api
+      - community-api
       - redis
     networks:
       - citymate-network
