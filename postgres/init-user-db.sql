@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS roles (
 INSERT INTO roles (name, description) VALUES
 ('VISITOR', 'Utilisateur non inscrit avec accès limité'),
 ('CLIENT', 'Utilisateur inscrit standard'),
-('ADMIN', 'Administrateur avec tous les droits')
+('ADMIN', 'Administrateur avec tous les droits'),
+('STUDENT', 'Étudiant inscrit sur CityMate')
 ON CONFLICT (name) DO NOTHING;
 
 -- ============================================
