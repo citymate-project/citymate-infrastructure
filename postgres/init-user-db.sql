@@ -13,7 +13,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- TABLE : ROLES
 -- ============================================
 CREATE TABLE IF NOT EXISTS roles (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -31,7 +31,7 @@ ON CONFLICT (name) DO NOTHING;
 -- TABLE : USERS
 -- ============================================
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -59,8 +59,8 @@ CREATE INDEX idx_users_is_active ON users(is_active);
 -- TABLE : USER_ROLES (Table de liaison)
 -- ============================================
 CREATE TABLE IF NOT EXISTS user_roles (
-    user_id INTEGER NOT NULL,
-    role_id INTEGER NOT NULL,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, role_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
