@@ -90,7 +90,7 @@ services:
   # ============================================
   user-api:
     build:
-      context: ../citymate-userapi
+      context: ../user-api
       dockerfile: Dockerfile
     container_name: citymate-user-api
     environment:
@@ -115,7 +115,7 @@ services:
   # ============================================
   api-gateway:
     build:
-      context: ../citymate-api-gateway
+      context: ../api-gateway
       dockerfile: Dockerfile
     container_name: citymate-api-gateway
     environment:
