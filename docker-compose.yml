@@ -111,6 +111,29 @@ services:
     restart: unless-stopped
 
   # ============================================
+  # API : CITY API (Port 8082)
+  # ============================================
+  city-api:
+    build:
+      context: ../city-api
+      dockerfile: Dockerfile
+    container_name: citymate-city-api
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://city-db:5432/city_db
+      SPRING_DATASOURCE_USERNAME: ${CITY_DB_USER:-citymate_city}
+      SPRING_DATASOURCE_PASSWORD: ${CITY_DB_PASSWORD:-city_password}
+      GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+    ports:
+      - "8082:8082"
+    depends_on:
+      city-db:
+        condition: service_healthy
+    networks:
+      - citymate-network
+    restart: unless-stopped
+
+  # ============================================
   # API : COMMUNITY API (Port 8083)
   # ============================================
   community-api:
@@ -150,6 +173,7 @@ services:
       - "8090:8090"
     depends_on:
       - user-api
+      - city-api
       - community-api
       - redis
     networks:
