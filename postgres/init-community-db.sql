@@ -1,5 +1,5 @@
 -- ============================================
--- CITYMATE - COMMUNITY DB Initialization Script
+-- CITYMATE - COMMUNITY DB Initialization Script correction pour sara
 -- ============================================
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

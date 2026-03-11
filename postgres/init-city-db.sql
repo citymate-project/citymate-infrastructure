@@ -1,5 +1,5 @@
 -- ============================================
--- CITYMATE - CITY DB Initialization Script
+-- CITYMATE - CITY DB Initialization Script correction pour sara
 -- ============================================
 -- Ce script crée les tables pour CITY API
 -- Tables : pois (Points d'Intérêt), poi_reviews, events, 
