@@ -3,7 +3,7 @@
 # ============================================
 
 # Fichiers sensibles
-.env
+
 
 # Volumes Docker (données locales)
 postgres-data/
