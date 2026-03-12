@@ -1,0 +1,50 @@
+name: CI — Infrastructure
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─────────────────────────────────────────
+  # JOB 1 : Validation de la configuration
+  # ─────────────────────────────────────────
+  validate:
+    name: Validate docker-compose
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Créer un .env minimal pour la validation
+        run: |
+          cat > .env << 'EOF'
+          JWT_SECRET=ci-validation-secret-key-not-real
+          USER_DB_USER=citymate_user
+          USER_DB_PASSWORD=user_password
+          CITY_DB_USER=citymate_city
+          CITY_DB_PASSWORD=city_password
+          COMMUNITY_DB_USER=citymate_community
+          COMMUNITY_DB_PASSWORD=community_password
+          GOOGLE_PLACES_API_KEY=ci-validation-key
+          EOF
+
+      - name: Valider la syntaxe du docker-compose.yml
+        run: docker compose config --quiet
+
+      - name: Vérifier que tous les services sont définis
+        run: |
+          services=$(docker compose config --services)
+          echo "Services détectés :"
+          echo "$services"
+
+          required="user-db city-db community-db redis user-api community-api city-api api-gateway"
+          for svc in $required; do
+            if echo "$services" | grep -q "^$svc$"; then
+              echo "✓ $svc"
+            else
+              echo "✗ $svc manquant !" && exit 1
+            fi
+          done
