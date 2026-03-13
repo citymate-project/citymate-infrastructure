@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS users (
     city VARCHAR(100),
     phone_number VARCHAR(20),
     date_of_birth DATE,
-    profile_type VARCHAR(20) CHECK (profile_type IN ('STUDENT', 'EMPLOYEE', 'OTHER')),
+    profile_type VARCHAR(20) CHECK (profile_type IN ('STUDENT', 'EMPLOYEE', 'ADMIN')),
     is_active BOOLEAN DEFAULT TRUE,
     is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
