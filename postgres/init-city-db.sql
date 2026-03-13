@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS events (
     organizer            VARCHAR(255),
     image_url            VARCHAR(500),
     created_by           INTEGER,
+    status               VARCHAR(20) NOT NULL DEFAULT 'VALIDATED',
     is_active            BOOLEAN DEFAULT true,
     created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -145,13 +146,13 @@ INSERT INTO event_categories (name, description) VALUES
 ON CONFLICT (name) DO NOTHING;
 
 -- Événements de test (Brest)
-INSERT INTO events (title, description, category_id, start_date, end_date, location_name, address, is_free, price, max_participants, current_participants, organizer, created_by, is_active) VALUES
-('Soirée d''intégration étudiante',   'Grande soirée de bienvenue pour les nouveaux étudiants brestois. Musique, jeux et buffet.',         4, '2026-04-01 19:00:00', '2026-04-01 23:59:00', 'Le Vauban',                      '17 Avenue Georges Clemenceau, 29200 Brest',   true,  0,    100,  12, 'BDE UBO',                    1, true),
-('Afterwork développeurs Brest',       'Rencontre mensuelle des développeurs brestois. Lightning talks et networking.',                       5, '2026-04-10 18:30:00', '2026-04-10 21:00:00', 'La Cantine Numérique',           '12 Rue du Château, 29200 Brest',              true,  0,    40,   5,  'Brest.js',                   1, true),
-('Tournoi de football 5v5',            'Tournoi amical ouvert à tous. Inscriptions par équipe de 5.',                                         2, '2026-04-15 14:00:00', '2026-04-15 18:00:00', 'Stade de Pen Ar Chleuz',         'Boulevard de Plymouth, 29200 Brest',          false, 5.00, 50,   30, 'AS UBO Sport',               1, true),
-('Visite guidée du musée de la Marine','Découverte du patrimoine maritime brestois avec un guide passionné.',                                 1, '2026-04-20 10:00:00', '2026-04-20 12:00:00', 'Musée National de la Marine',    'Rue du Château, 29200 Brest',                 false, 8.50, 25,   20, 'Office du Tourisme Brest',   1, true),
-('Cours de yoga en plein air',         'Session de yoga accessible à tous niveaux au Jardin des Explorateurs.',                              2, '2026-04-22 09:00:00', '2026-04-22 10:30:00', 'Jardin des Explorateurs',        'Rue de l''Amiral Nicol, 29200 Brest',         true,  0,    NULL, 0,  'Zen Brest',                  1, true),
-('Atelier CV et entretien',            'Atelier pratique pour préparer son CV et simuler des entretiens.',                                    5, '2026-03-01 14:00:00', '2026-03-01 17:00:00', 'Faculté des Lettres UBO',        '20 Rue Duquesne, 29200 Brest',                true,  0,    30,   30, 'Career Center UBO',          1, true)
+INSERT INTO events (title, description, category_id, start_date, end_date, location_name, address, is_free, price, max_participants, current_participants, organizer, created_by, is_active, status) VALUES
+('Soirée d''intégration étudiante',   'Grande soirée de bienvenue pour les nouveaux étudiants brestois. Musique, jeux et buffet.',         4, '2026-04-01 19:00:00', '2026-04-01 23:59:00', 'Le Vauban',                      '17 Avenue Georges Clemenceau, 29200 Brest',   true,  0,    100,  12, 'BDE UBO',                    1, true, 'VALIDATED'),
+('Afterwork développeurs Brest',       'Rencontre mensuelle des développeurs brestois. Lightning talks et networking.',                       5, '2026-04-10 18:30:00', '2026-04-10 21:00:00', 'La Cantine Numérique',           '12 Rue du Château, 29200 Brest',              true,  0,    40,   5,  'Brest.js',                   1, true, 'VALIDATED'),
+('Tournoi de football 5v5',            'Tournoi amical ouvert à tous. Inscriptions par équipe de 5.',                                         2, '2026-04-15 14:00:00', '2026-04-15 18:00:00', 'Stade de Pen Ar Chleuz',         'Boulevard de Plymouth, 29200 Brest',          false, 5.00, 50,   30, 'AS UBO Sport',               1, true, 'VALIDATED'),
+('Visite guidée du musée de la Marine','Découverte du patrimoine maritime brestois avec un guide passionné.',                                 1, '2026-04-20 10:00:00', '2026-04-20 12:00:00', 'Musée National de la Marine',    'Rue du Château, 29200 Brest',                 false, 8.50, 25,   20, 'Office du Tourisme Brest',   1, true, 'VALIDATED'),
+('Cours de yoga en plein air',         'Session de yoga accessible à tous niveaux au Jardin des Explorateurs.',                              2, '2026-04-22 09:00:00', '2026-04-22 10:30:00', 'Jardin des Explorateurs',        'Rue de l''Amiral Nicol, 29200 Brest',         true,  0,    NULL, 0,  'Zen Brest',                  1, true, 'VALIDATED'),
+('Atelier CV et entretien',            'Atelier pratique pour préparer son CV et simuler des entretiens.',                                    5, '2026-03-01 14:00:00', '2026-03-01 17:00:00', 'Faculté des Lettres UBO',        '20 Rue Duquesne, 29200 Brest',                true,  0,    30,   30, 'Career Center UBO',          1, true, 'VALIDATED')
 ON CONFLICT DO NOTHING;
 
 -- Catégories deals
